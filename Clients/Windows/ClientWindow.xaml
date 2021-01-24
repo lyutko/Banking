@@ -1,0 +1,214 @@
+﻿<Window x:Class="Client.ClientWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Client"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        mc:Ignorable="d"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        Title="SuperBank24 (Client)" Height="400" Width="700"
+        MinHeight="300" MinWidth="600" Icon="/Client;component/Bank.png">
+    <Window.Background>
+        <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
+            <LinearGradientBrush.RelativeTransform>
+                <TransformGroup>
+                    <ScaleTransform CenterY="0.5" CenterX="0.5"/>
+                    <SkewTransform CenterY="0.5" CenterX="0.5"/>
+                    <RotateTransform Angle="-45" CenterY="0.5" CenterX="0.5"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </LinearGradientBrush.RelativeTransform>
+            <GradientStop Color="#FFB3B6FF" Offset="1"/>
+            <GradientStop Color="#FFABF0FF"/>
+        </LinearGradientBrush>
+    </Window.Background>
+    <materialDesign:DialogHost
+        Identifier="RootDialog"
+        DialogTheme="Inherit">
+        <Grid>
+            <materialDesign:Card Padding="5" Margin="10" Background="#4CFFFFFF">
+                <DockPanel LastChildFill="True">
+                    <DockPanel Margin="5" LastChildFill="True" DockPanel.Dock="Top" Height="100">
+                        <Grid x:Name="ClientInfo">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+
+                            <Image Grid.Column="0" Grid.RowSpan="4" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            </Image>
+                            <materialDesign:PackIcon Kind="AccountBox" Grid.Column="0" Grid.RowSpan="4" Width="80" Height="80" Foreground="DarkOrange"
+                                                 HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <Label Grid.Column="1" Grid.Row="0" Content="First name:" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="14"/>
+                            <Label Grid.Column="1" Grid.Row="1" Content="Second name:" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="14"/>
+                            <Label Grid.Column="1" Grid.Row="2" Content="Last name:" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="14"/>
+                            <StackPanel Grid.Column="1" Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                <Label VerticalAlignment="Center" FontSize="14" Content="Address:"/>
+                                <materialDesign:PackIcon Kind="Email" Width="20" Height="20" Foreground="Purple" VerticalAlignment="Center"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="3" Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                <Label Content="Birthday:" VerticalAlignment="Center" FontSize="14"/>
+                                <materialDesign:PackIcon Kind="CalendarMonth" Width="20" Height="20" Foreground="IndianRed" VerticalAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="3" Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                <Label Content="Phone:" VerticalAlignment="Center" FontSize="14"/>
+                                <materialDesign:PackIcon Kind="PhoneDial" Width="20" Height="20" Foreground="ForestGreen" VerticalAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="3" Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                <Label Content="Email:" VerticalAlignment="Center" FontSize="14"/>
+                                <materialDesign:PackIcon Kind="At" Width="20" Height="20" Foreground="MediumBlue" VerticalAlignment="Center"/>
+                            </StackPanel>
+
+                            <TextBlock Name="txt" Grid.Column="2" Grid.Row="0" VerticalAlignment="Center" Margin="3,1" FontStyle="Italic" Text="{Binding FirstName}"/>
+                            <TextBlock Grid.Column="2" Grid.Row="1" VerticalAlignment="Center" Margin="3,1" FontStyle="Italic" Text="{Binding SecondName}"/>
+                            <TextBlock Grid.Column="2" Grid.Row="2" VerticalAlignment="Center" Margin="3,1" FontStyle="Italic" Text="{Binding LastName}"/>
+                            <TextBlock Grid.Column="2" Grid.Row="3" VerticalAlignment="Center" Margin="3,1" FontStyle="Italic" Grid.ColumnSpan="3" Text="{Binding Address}"/>
+                            <TextBlock Grid.Column="4" Grid.Row="0" VerticalAlignment="Center" Margin="3,1" FontStyle="Italic" Text="{Binding Birthday}"/>
+                            <TextBlock Grid.Column="4" Grid.Row="1" VerticalAlignment="Center" Margin="3,1" FontStyle="Italic" Text="{Binding Phone}"/>
+                            <TextBlock Grid.Column="4" Grid.Row="2" VerticalAlignment="Center" Margin="3,1" FontStyle="Italic" Text="{Binding Email}"/>
+                        </Grid>
+                    </DockPanel>
+
+                    
+                    
+                    
+                    <StackPanel Orientation="Vertical" Margin="5">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <StackPanel>
+                                <TabControl x:Name="tabControl" Style="{StaticResource MaterialDesignNavigatilRailTabControl}"
+                                    materialDesign:ColorZoneAssist.Mode="Accent"
+                                    SelectedItem="{Binding SelectedAccount, Mode=TwoWay}" ItemsSource="{Binding Accounts}"
+                                    HorizontalContentAlignment="Stretch" VerticalAlignment="Stretch"
+                                    ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True">
+                                    <TabControl.ItemContainerStyle>
+                                        <Style BasedOn="{StaticResource MaterialDesignNavigationRailTabItem}" TargetType="TabItem">
+                                            <Setter Property="Padding" Value="1"/>
+                                            <Setter Property="Margin" Value="1"/>
+                                        </Style>
+                                    </TabControl.ItemContainerStyle>
+                                    <TabControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+                                                <materialDesign:PackIcon Kind="HomeCurrencyUsd" Width="16" Height="16" HorizontalAlignment="Center"/>
+                                                <TextBlock Text="{Binding Description}" TextWrapping="Wrap" FontSize="10" HorizontalAlignment="Center"/>
+                                                <TextBlock Text="{Binding EndNumber}" TextWrapping="Wrap" FontSize="10" HorizontalAlignment="Center"/>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </TabControl.ItemTemplate>
+                                    <TabControl.ContentTemplate>
+                                        <DataTemplate>
+
+
+
+                                            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                                <StackPanel Background="{DynamicResource MaterialDesignBackground}" Orientation="Vertical">
+                                                    <TextBox IsReadOnly="True" IsReadOnlyCaretVisible="False"
+                                                             Text="{Binding Number}" TextWrapping="Wrap" Padding="2"
+                                                             FontSize="14" FontWeight="Bold" HorizontalAlignment="Center"/>
+                                                    <TextBlock Text="{Binding StringFormat={}{0:C}, Path=Amount}" TextWrapping="Wrap" Padding="2"
+                                                       FontSize="12" FontWeight="Bold" HorizontalAlignment="Center"/>
+                                                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                                        <StackPanel Background="{DynamicResource MaterialDesignBackground}" Orientation="Vertical"
+                                                                    ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                                                    ScrollViewer.CanContentScroll="True">
+
+
+
+                                                            <ListBox HorizontalContentAlignment="Stretch" ItemsSource="{Binding Operations}">
+                                                                <ItemsControl.ItemTemplate>
+                                                                    <DataTemplate>
+                                                                        <Expander HorizontalAlignment="Stretch">
+                                                                            <Expander.Header>
+                                                                                <StackPanel Orientation="Horizontal">
+                                                                                    <TextBlock Text="{Binding ShortDate}" />
+                                                                                    <TextBlock Text="   " />
+                                                                                    <TextBlock Text="{Binding AmountIsPositive}" Foreground="{Binding OperationColor}"/>
+                                                                                    <TextBlock Text="{Binding StringFormat={}{0:C}, Path=Amount}" Foreground="{Binding OperationColor}"/>
+                                                                                    <TextBlock Text="   " />
+                                                                                    <TextBlock Text="{Binding IsSuccess}" Foreground="{Binding ResultColor}"/>
+                                                                                </StackPanel>
+                                                                            </Expander.Header>
+
+                                                                            <StackPanel Orientation="Vertical" Margin="24,8,24,16"
+                                                                                    TextBlock.Foreground="{DynamicResource MaterialDesignBody}">
+                                                                                <TextBlock FontSize="14">
+                                                                                <Run Text="Oparation Info:"/>
+                                                                                <LineBreak/>
+                                                                                <LineBreak/>
+                                                                                </TextBlock>
+                                                                                <StackPanel Orientation="Horizontal">
+                                                                                    <TextBlock TextWrapping="Wrap" Text="Amount: " FontWeight="Bold"/>
+                                                                                    <TextBlock Opacity="0.9" TextWrapping="Wrap" Text="{Binding StringFormat={}{0:C}, Path=Amount}" FontWeight="Bold"/>
+                                                                                </StackPanel>
+                                                                                <StackPanel Orientation="Horizontal">
+                                                                                    <TextBlock Opacity="0.9" TextWrapping="Wrap" Text="Description: " FontWeight="Bold"/>
+                                                                                    <TextBlock Opacity="0.7" TextWrapping="Wrap" Text="{Binding Description}"/>
+                                                                                </StackPanel>
+                                                                                <StackPanel Orientation="Horizontal">
+                                                                                    <TextBlock Opacity="0.9" TextWrapping="Wrap" Text="DateTime: " FontWeight="Bold"/>
+                                                                                    <TextBlock Opacity="0.7" TextWrapping="Wrap" Text="{Binding DateTime}"/>
+                                                                                </StackPanel>
+                                                                                <StackPanel Orientation="Horizontal">
+                                                                                    <TextBlock Opacity="0.9" TextWrapping="Wrap" Text="From account: " FontWeight="Bold"/>
+                                                                                    <TextBlock Opacity="0.7" TextWrapping="Wrap" Text="{Binding FromAccountNumber}"/>
+                                                                                </StackPanel>
+                                                                                <StackPanel Orientation="Horizontal">
+                                                                                    <TextBlock Opacity="0.9" TextWrapping="Wrap" Text="To account: " FontWeight="Bold"/>
+                                                                                    <TextBlock Opacity="0.7" TextWrapping="Wrap" Text="{Binding ToAccountNumber}"/>
+                                                                                </StackPanel>
+                                                                                <StackPanel Orientation="Horizontal">
+                                                                                    <TextBlock Opacity="0.9" TextWrapping="Wrap" Text="Result: " FontWeight="Bold"/>
+                                                                                    <TextBlock Opacity="0.7" TextWrapping="Wrap" Text="{Binding IsSuccess}" Foreground="{Binding ResultColor}"/>
+                                                                                </StackPanel>
+                                                                            </StackPanel>
+                                                                        </Expander>
+                                                                    </DataTemplate>
+                                                                </ItemsControl.ItemTemplate>
+                                                            </ListBox>
+
+
+
+                                                        </StackPanel>
+                                                    </ScrollViewer>
+                                                    <Border Background="{DynamicResource MaterialDesignDivider}"
+                                                        Height="1" HorizontalAlignment="Stretch" SnapsToDevicePixels="True" />
+                                                </StackPanel>
+                                            </ScrollViewer>
+
+
+
+                                        </DataTemplate>
+                                    </TabControl.ContentTemplate>
+                                </TabControl>
+                            </StackPanel>
+                        </ScrollViewer>
+
+
+
+                    </StackPanel>
+                </DockPanel>
+            </materialDesign:Card>
+            <Button DockPanel.Dock="Bottom" HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                Style="{StaticResource MaterialDesignFloatingActionAccentButton}" Margin="0,0,12,12"
+                Command="{Binding NumberCommand}">
+                <materialDesign:PackIcon Kind="Transfer" Height="24" Width="24"/>
+            </Button>
+        </Grid>
+    </materialDesign:DialogHost>
+</Window>

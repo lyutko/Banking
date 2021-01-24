@@ -1,0 +1,63 @@
+﻿<Window x:Class="Client.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Client"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        mc:Ignorable="d"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        Title="SuperBank24" Height="340" Width="550"
+        MinHeight="340" MinWidth="550" Icon="/Client;component/Bank.png">
+    <Window.Background>
+        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+            <GradientStop Color="#FF0068FF" Offset="0"/>
+            <GradientStop Color="#FF0FC2EA" Offset="1"/>
+        </LinearGradientBrush>
+    </Window.Background>
+    <materialDesign:DialogHost
+        Identifier="LoginDialog"
+        DialogTheme="Inherit">
+        <Grid>
+            <materialDesign:Card Padding="5" Margin="15" Background="#7FFFFFFF">
+                <DockPanel LastChildFill="True">
+                    <ProgressBar DockPanel.Dock="Top" IsIndeterminate="True" Visibility="{Binding ProgressVisibility}"/>
+                    <StackPanel Margin="10">
+                        <DockPanel LastChildFill="True" Margin="0,5">
+                            <materialDesign:PackIcon Kind="Account" Width="30" Height="30" VerticalAlignment="Center" Foreground="Blue"/>
+                            <TextBox Padding="10" Background="#4CFFFFFF"
+                            x:Name="loginBox"
+                            materialDesign:HintAssist.Hint="Login or email"
+                            materialDesign:HintAssist.HelperText="Your login for entering system. If you don't have login contact a bank employee"
+                            Text="{Binding Login}" IsEnabled="{Binding IsEnable}"/>
+                        </DockPanel>
+                        <DockPanel LastChildFill="True" Margin="0,10,0,10">
+                            <materialDesign:PackIcon Kind="KeyVariant" Width="30" Height="30" VerticalAlignment="Center" Foreground="BlueViolet"/>
+                            <PasswordBox Padding="10" Background="#4CFFFFFF"
+                            x:Name="passwordBox" IsEnabled="{Binding IsEnable}"
+                            materialDesign:HintAssist.Hint="Password"
+                            materialDesign:TextFieldAssist.HasClearButton="True"
+                            materialDesign:HintAssist.HelperText="At least 6 characters"/>
+                        </DockPanel>
+                        <Button Width="100" Height="30" Margin="10" IsEnabled="{Binding IsEnable}"
+                        Command="{Binding SigninCommand}" CommandParameter="{Binding ElementName=passwordBox}"
+                        >Sign In</Button>
+                        <TextBlock x:Name="errroMsg"
+                        Style="{StaticResource MaterialDesignHeadline6TextBlock}" Text="{Binding ErrorText}"
+                        HorizontalAlignment="Center" Foreground="Red" />
+                    </StackPanel>
+                </DockPanel>
+            </materialDesign:Card>
+            <Button DockPanel.Dock="Bottom" HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                Style="{StaticResource MaterialDesignFloatingActionAccentButton}" Margin="0,0,24,24"
+                Command="{Binding AddressCommand}" Height="24" Width="24">
+                <materialDesign:PackIcon Kind="CogOutline" />
+            </Button>
+        </Grid>
+    </materialDesign:DialogHost>
+</Window>
