@@ -60,30 +60,43 @@ namespace Server
                 Stream = _client.GetStream();
                 User user = null;
 
-                // Авторизація клієнта
-                while (user == null)
+                // Авторизація клієнта (поки не авторизується, далі не пустить, тому й в циклі
+                while (user == null && _client.Connected)
                 {
+                    // Отримання логіну та паролю
                     string message = GetMessage();
-                    Creds creds = JsonConvert.DeserializeObject<Creds>(message);
-                    UserName = creds.Login;
-                    Console.WriteLine($"User {this.Id}({UserName}) is trying to connect");
-
-                    if (_server.UserConnectionIsRepeated(UserName, this))
+                    if (message == "Disconnect") throw new Exception();
+                    else if (message.Length > 0)
                     {
-                        _server.BroadcastMessage("repeat", this);
-                        Console.WriteLine($"User {this.Id}({UserName}) has already connected before");
-                        continue;
-                    }
-                    user = await _dbHelper.CheckCredentials(creds.Login, creds.Password);
-                    var userDTO = _mapper.Map<UserDTO>(user);
-                    message = JsonConvert.SerializeObject(userDTO);
-                    _server.BroadcastMessage(message, this);
-                    if (userDTO == null)
-                        Console.WriteLine($"User {this.Id}({UserName}) authorization failed");
-                    else
-                    {
-                        //Accounts = user.Client.Accounts.ToList();
-                        Console.WriteLine($"User {this.Id}({UserName}) has connected");
+                        Creds creds = null;
+                        try { creds = JsonConvert.DeserializeObject<Creds>(message); }
+                        catch (Exception) { Console.WriteLine($"User {this.Id}({UserName}) sent message with credantials strucrure promlem"); }
+                        if (creds != null)
+                        {
+                            UserName = creds.Login;
+                            Console.WriteLine($"User {this.Id}({UserName}) is trying to connect");
+                            // Перевірка чи з'єднання є повторним (чи юзер зараз вже користується додатком на іншому пристрої)
+                            if (_server.UserConnectionIsRepeated(UserName, this))
+                            {
+                                _server.BroadcastMessage("repeat", this);
+                                Console.WriteLine($"User {this.Id}({UserName}) has already connected before");
+                                continue;
+                            }
+                            // Перевірка логіну та паролю
+                            user = await _dbHelper.CheckCredentials(creds.Login, creds.Password);
+                            var userDTO = _mapper.Map<UserDTO>(user);
+                            message = JsonConvert.SerializeObject(userDTO);
+                            // Відправка відповіді
+                            _server.BroadcastMessage(message, this);
+                            // Логування
+                            if (userDTO == null)
+                                Console.WriteLine($"User {this.Id}({UserName}) authorization failed");
+                            else
+                            {
+                                Accounts = user.Client.Accounts.ToList();
+                                Console.WriteLine($"User {this.Id}({UserName}) has connected");
+                            }
+                        }
                     }
                 }
 
@@ -92,7 +105,9 @@ namespace Server
                 {
                     try
                     {
+                        // Постійне очікування на команду
                         string message = GetMessage();
+                        // Якщо прийшла команда на переказ коштів
                         if (message.Substring(0, 10) == "operation ")
                         {
                             var res = "Successful";
@@ -140,6 +155,7 @@ namespace Server
                             { Console.WriteLine($"User {this.Id}({UserName}) operation error:\n\t{oper.CurrentAccountNumber}: {ex.Message}"); }
                             _server.BroadcastMessage("operatRes " + res, this);
                         }
+                        // Якщо прийшов запит на отримання всіх клієнтів
                         else if (message.Substring(0, 10) == "getClients")
                         {
                             try
@@ -153,6 +169,7 @@ namespace Server
                             catch (Exception ex)
                             { Console.WriteLine($"User {this.Id}({UserName}) get error:\n\temployee: {ex.Message}"); }
                         }
+                        // Якщо прийшов запит на створення клієнта
                         else if (message.Substring(0, 10) == "clientAdd ")
                         {
                             var res = "Successful";
@@ -173,6 +190,7 @@ namespace Server
                             { Console.WriteLine($"User {this.Id}({UserName}) action error:\n\tadd client: {ex.Message}"); }
                             _server.BroadcastMessage("operatRes " + res, this);
                         }
+                        // Якщо прийшов запит на створення користувача (для змоги користуватися додатком)
                         else if (message.Substring(0, 10) == "userAdd   ")
                         {
                             var res = "Successful";
@@ -203,6 +221,7 @@ namespace Server
                             { Console.WriteLine($"User {this.Id}({UserName}) action error:\n\tadd user: {ex.Message}"); }
                             _server.BroadcastMessage("operatRes " + res, this);
                         }
+                        // Якщо прийшов запитна створення рахунку
                         else if (message.Substring(0, 10) == "accountAdd")
                         {
                             var res = "Successful";
@@ -229,9 +248,11 @@ namespace Server
                     catch (Exception) { break; }
                 }
             }
+            catch (Exception) {}
             finally { Close(); }
         }
 
+        // Метод для отримання повідомлення
         private string GetMessage()
         {
             StringBuilder builder = new StringBuilder();
@@ -249,16 +270,22 @@ namespace Server
             return builder.ToString();
         }
 
+
+
         protected internal void Close()
         {
             Console.WriteLine($"User {this.Id}({UserName}) has disconnected");
             _server.RemoveConnection(this.Id);
             if (Stream != null)
+            {
+                Stream.Flush();
                 Stream.Close();
+            }
             if (_client != null)
+            {
                 _client.Close();
-            if (_client != null)
                 _client.Dispose();
+            }
         }
 
         public void Dispose() => _dbHelper.Dispose();

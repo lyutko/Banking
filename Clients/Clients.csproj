@@ -74,7 +74,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Commands\AnotherCommandImplementation.cs" />
     <Compile Include="Dialogs\AddNumberDialog.xaml.cs">
       <DependentUpon>AddNumberDialog.xaml</DependentUpon>
     </Compile>

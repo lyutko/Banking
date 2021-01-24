@@ -243,13 +243,14 @@ namespace Server
             {
                 try
                 {
-                    return await context.Users
+                    var user = await context.Users
                             .AsNoTracking()
                             .Include(x => x.Client)
                             .Include(x => x.Client.Accounts)
                             .Include(x => x.Client.Accounts.Select(a => a.Operations))
                             .Include(x => x.Role)
                             .FirstOrDefaultAsync(u => u.Login == loginOrEmail || u.Client.Email == loginOrEmail);
+                    return user;
                 }
                 catch (Exception) { Thread.Sleep(1000); }
                 i--;

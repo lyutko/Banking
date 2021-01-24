@@ -128,8 +128,7 @@ namespace Client
 
 
 
-
-
+        // Виклид діалогу створення операції
         private async void ExecuteRunDialog()
         {
             // Введення реквізитів отримувача
@@ -145,10 +144,9 @@ namespace Client
             await DialogHost.Show(viewNumberTo, "RootDialog", ClosingEventHandler);
 
 
-
+            // Введення деталей переказу
             if (_operationIsValid)
             {
-                // Введення деталей переказу
                 operationVM.ToAccountNumber = operationVM.Number;
                 operationVM.Number = "";
                 operationVM.Amount = 0;
@@ -163,7 +161,6 @@ namespace Client
             }
 
 
-
             // Створення операції для локального використання
             var operation = new OperationDTO()
             {
@@ -175,9 +172,6 @@ namespace Client
                 DateTime = DateTime.Now,
                 AccountId = SelectedAccount.Id
             };
-
-
-
 
 
             if (_operationIsValid)
@@ -242,6 +236,7 @@ namespace Client
             }
         }
 
+        // Безпосереднє виконання операції
         private async Task TryExecuteOperation() => await Task.Run(() => CheckOperation(operationVM));
         private async Task CheckOperation(OperationViewModel operationVM)
         {
@@ -271,7 +266,7 @@ namespace Client
         }
 
 
-
+        // Постійне прослуховування вхідних повідомлень від серевера
         private async void StartGettingOperations() => await Task.Run(() => OperationGetter());
         private void OperationGetter()
         {
@@ -288,7 +283,7 @@ namespace Client
                 }
             }
         }
-
+        // Вставка 
         private void InsertOperation(OperationDTO operation)
         {
             var account = Accounts.FirstOrDefault(a => a.Number == operation.CurrentAccountNumber);
@@ -297,14 +292,12 @@ namespace Client
                 if (operation.ResultIsSuccess) account.Amount += operation.Amount;
                 account.Operations.Add(operation);
                 if (SelectedAccount == account)
+                {
                     OnPropertyChanged(nameof(Operations));
-                OnPropertyChanged(nameof(SelectedAccount));
+                    OnPropertyChanged(nameof(SelectedAccount));
+                }
             }
         }
-
-
-
-
 
 
 

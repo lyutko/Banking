@@ -53,6 +53,8 @@ namespace Client
             set { if (_address != value) { _address = value; OnPropertyChanged(); } }
         }
 
+
+        // Авторизація
         private CommandHandler _signInCommand { get; set; }
         public ICommand SigninCommand => _signInCommand ?? (_signInCommand = new CommandHandler(param => Signin(param)));
         private async void Signin(object param)
@@ -111,7 +113,7 @@ namespace Client
 
 
 
-
+        // Запит на перевірку авторизаційних даних
         private UserDTO CheckCredentials(object param)
         {
             ErrorText = "";
@@ -163,6 +165,8 @@ namespace Client
                         ? "The user is already connected from another device"
                         : "Incorrect login or password";
                     OnPropertyChanged(nameof(ErrorText));
+                    data = Encoding.Unicode.GetBytes("Disconnect");
+                    _stream.Write(data, 0, data.Length);
                     Unconnect();
                 }
             }
@@ -179,14 +183,7 @@ namespace Client
 
 
 
-
-
-
-
-
-
-
-        //static DbHelper dbHelper = new DbHelper();
+        // Запита на отримання списку клієнтів
         private List<ClientDTO> GetClients()
         {
             ProgressVisibility = Visibility.Visible;
@@ -225,23 +222,6 @@ namespace Client
                 MessageBox.Show("Connection failed!");
                 Unconnect();
             }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
             return clientDTOs;
         }
 

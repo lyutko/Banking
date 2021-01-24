@@ -32,7 +32,7 @@ namespace Server
         {
             foreach (var client in clients)
             {
-                var account = client.Accounts.FirstOrDefault(c => c.Number == accounNumber);
+                var account = client.Accounts?.FirstOrDefault(c => c.Number == accounNumber);
                 if (account != null && client != curClient)
                     return client;
             }
